@@ -14,7 +14,9 @@ app.get('/api/items', async (req, res) => {
     if (req.query.user_id) {
       items = await knex('items').where('user_id', req.query.user_id);
     } else {
-      items = await knex('items').select('*');
+      items = await knex('items')
+        .select('items.*', 'users.username as added_by')
+        .leftJoin('users', 'items.user_id', 'users.id');
     }
     res.json(items);
   } catch (error) {
@@ -26,30 +28,40 @@ app.get('/api/items', async (req, res) => {
 // GET a single item
 app.get('/api/items/:id', async (req, res) => {
   try {
-    const item = await knex('items').where('id', req.params.id).first();
-    if (item) {
-      res.json(item);
-    } else {
-      res.status(404).json({ error: 'Item not found' });
+    const { id } = req.params;
+    const item = await knex('items')
+      .select('items.*', 'users.username as added_by')
+      .leftJoin('users', 'items.user_id', 'users.id')
+      .where('items.id', id)
+      .first();
+
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
     }
+
+    res.json(item);
   } catch (error) {
+    console.error('Error fetching item:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// POST a new item
+// CREATE a new item
 app.post('/api/items', async (req, res) => {
   try {
     const { user_id, item_name, description, quantity } = req.body;
-    const [id] = await knex('items').insert({
+    const [newId] = await knex('items').insert({
       user_id,
       item_name,
       description,
       quantity
     }).returning('id');
+
+    const id = typeof newId === 'object' ? newId.id : newId;
     const newItem = await knex('items').where('id', id).first();
     res.status(201).json(newItem);
   } catch (error) {
+    console.error('Error creating item:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -68,9 +80,16 @@ app.put('/api/items/:id', async (req, res) => {
 // DELETE an item
 app.delete('/api/items/:id', async (req, res) => {
   try {
-    await knex('items').where('id', req.params.id).del();
+    const { id } = req.params;
+    const deletedCount = await knex('items').where('id', id).del();
+
+    if (deletedCount === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
     res.json({ message: 'Item deleted successfully' });
   } catch (error) {
+    console.error('Error deleting item:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -107,18 +126,6 @@ app.post('/api/login', async (req, res) => {
     res.json({ id: user.id, username: user.username });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Checking the database
-app.get('/api/debug', async (req, res) => {
-  try {
-    const users = await knex('users').select('*');
-    const items = await knex('items').select('*');
-    res.json({ users, items });
-  } catch (error) {
-    console.error('Debug route error:', error);
     res.status(500).json({ error: error.message });
   }
 });

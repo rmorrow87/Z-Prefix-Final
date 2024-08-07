@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ setUser }) {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
@@ -24,6 +24,7 @@ function Login() {
       })
       .then(data => {
         localStorage.setItem('user', JSON.stringify(data));
+        setUser(data);
         navigate('/');
       })
       .catch(error => {

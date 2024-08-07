@@ -6,16 +6,8 @@ import ItemForm from './components/ItemForm';
 import Register from './components/Register';
 import Login from './components/Login';
 
-function Navigation() {
-  const [user, setUser] = useState(null);
+function Navigation({ user, setUser }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -44,17 +36,27 @@ function Navigation() {
 }
 
 function App() {
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [shouldFetchItems, setShouldFetchItems] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
     <Router>
       <div>
-        <Navigation />
+        <Navigation user={user} setUser={setUser} />
         <Routes>
-          <Route path="/" element={<ItemList />} />
-          <Route path="/item/:id" element={<ItemDetail />} />
-          <Route path="/add" element={<ItemForm />} />
-          <Route path="/edit/:id" element={<ItemForm />} />
+          <Route path="/" element={<ItemList shouldFetch={shouldFetchItems} setShouldFetch={setShouldFetchItems} />} />
+          <Route path="/item/:id" element={<ItemDetail setShouldFetch={setShouldFetchItems} />} />
+          <Route path="/add" element={<ItemForm setShouldFetch={setShouldFetchItems} />} />
+          <Route path="/edit/:id" element={<ItemForm setShouldFetch={setShouldFetchItems} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
         </Routes>
       </div>
     </Router>
