@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Login comparing user and credential states
 function Login({ setUser }) {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
+  // Set credential state values to user input
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  // Convert states to strings and check for match; set appropriate user state in local storage
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch('http://localhost:3001/api/login', {

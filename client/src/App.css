@@ -1,4 +1,7 @@
-/* Basic reset and global styles */
+/* This whole thing is a big a mess, but I built it hopping back and forth using the CTRL + SHIFT + F.
+There is almost certainly a better and more organized way to do this, but this kept working and I decided
+that messy and working was a better combo than clean and not working. */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,45 +16,40 @@ body {
   padding: 20px;
 }
 
-/* Container for our app */
-.container {
-  max-width: 800px;
+.inventory-title {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+  color: #bb86fc;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Navigation styles */
-nav {
-  background-color: #1e1e1e;
-  padding: 10px;
+.app-header {
+  width: 100%;
+  text-align: center;
   margin-bottom: 20px;
 }
 
-nav ul {
-  list-style-type: none;
-  display: flex;
-  justify-content: space-around;
+.app-title {
+  font-size: 2.5em;
+  color: #bb86fc;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-nav ul li a, nav ul li button {
-  color: #e0e0e0;
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-nav ul li a:hover, nav ul li button:hover {
-  background-color: #333;
-}
-
-/* Headings */
 h1, h2, h3 {
   margin-bottom: 15px;
   color: #bb86fc;
 }
 
-/* Links */
 a {
   color: #03dac6;
   text-decoration: none;
@@ -61,7 +59,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Buttons */
 button {
   background-color: #bb86fc;
   color: #000;
@@ -70,14 +67,26 @@ button {
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 button:hover {
   background-color: #9162c5;
+  transform: translateY(-2px);
 }
 
-/* Forms */
+button:active {
+  transform: translateY(0);
+}
+
+.toggle-button {
+  display:flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 form {
   background-color: #1e1e1e;
   padding: 20px;
@@ -95,7 +104,6 @@ input, textarea {
   color: #e0e0e0;
 }
 
-/* Lists */
 ul {
   list-style-type: none;
 }
@@ -107,7 +115,6 @@ li {
   border-radius: 5px;
 }
 
-/* Item details */
 .item-details {
   background-color: #1e1e1e;
   padding: 20px;
@@ -115,139 +122,111 @@ li {
   margin-bottom: 20px;
 }
 
-/* Responsive design */
-@media (max-width: 600px) {
-  nav ul {
-    flex-direction: column;
-  }
-
-  nav ul li {
-    margin-bottom: 10px;
-  }
-}/* Basic reset and global styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  color: #e0e0e0;
-  background-color: #121212;
-  padding: 20px;
-}
-
-/* Container for our app */
-.container {
-  max-width: 800px;
+.item-list-container {
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
 }
 
-/* Navigation styles */
-nav {
-  background-color: #1e1e1e;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-nav ul {
+.item-list {
   list-style-type: none;
-  display: flex;
-  justify-content: space-around;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
-nav ul li a, nav ul li button {
+.item-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  width: 100%;
+}
+
+.item-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
   color: #e0e0e0;
   text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
 }
 
-nav ul li a:hover, nav ul li button:hover {
-  background-color: #333;
+.item-link:hover {
+  text-decoration: none;
 }
 
-/* Headings */
-h1, h2, h3 {
-  margin-bottom: 15px;
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(187, 134, 252, 0.3);
+}
+
+.item-link h3 {
+  margin: 10px 0;
   color: #bb86fc;
 }
 
-/* Links */
-a {
-  color: #03dac6;
-  text-decoration: none;
+.item-link p {
+  margin: 5px 0;
 }
 
-a:hover {
-  text-decoration: underline;
+.added-by {
+  font-style: italic;
+  font-size: 0.9em;
+  color: #a0a0a0;
 }
 
-/* Buttons */
-button {
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: #2c2c2c;
+  margin: 0 auto 20px;
+  border-radius: 15px;
+  border: 2px solid #bb86fc;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.nav-button {
   background-color: #bb86fc;
   color: #000;
   border: none;
   padding: 10px 15px;
-  margin: 5px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.1s;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  display: inline-block;
+  line-height: normal;
+  font-family: inherit;
+  margin: 0;
 }
 
-button:hover {
+.nav-button:hover {
   background-color: #9162c5;
+  transform: translateY(-2px);
+  text-decoration: none;
 }
 
-/* Forms */
-form {
-  background-color: #1e1e1e;
-  padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
+.nav-button:active {
+  transform: translateY(0);
 }
 
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #333;
-  background-color: #2c2c2c;
-  color: #e0e0e0;
+button.nav-button {
+  font-family: inherit;
 }
 
-/* Lists */
-ul {
-  list-style-type: none;
-}
-
-li {
-  background-color: #1e1e1e;
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 5px;
-}
-
-/* Item details */
-.item-details {
-  background-color: #1e1e1e;
-  padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-}
-
-/* Responsive design */
 @media (max-width: 600px) {
-  nav ul {
-    flex-direction: column;
-  }
-
-  nav ul li {
-    margin-bottom: 10px;
+  .item-list {
+    grid-template-columns: 1fr;
   }
 }

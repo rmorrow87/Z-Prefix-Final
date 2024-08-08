@@ -147,6 +147,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
+// Listen statement
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

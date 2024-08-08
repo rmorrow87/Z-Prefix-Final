@@ -16,9 +16,10 @@ function ItemList({ shouldFetch, setShouldFetch }) {
   useEffect(() => {
     if (!shouldFetch) return;
 
+    // GET items based on logged in user vs visitor
     const fetchItems = async () => {
       try {
-        // Fetch user's items
+        // GET individual user's items
         if (user) {
           const userResponse = await fetch(`http://localhost:3001/api/items?user_id=${user.id}`);
           if (!userResponse.ok) {
@@ -28,7 +29,7 @@ function ItemList({ shouldFetch, setShouldFetch }) {
           setItems(userData);
         }
 
-        // Fetch all items
+        // GET all items in DB
         const allResponse = await fetch('http://localhost:3001/api/items');
         if (!allResponse.ok) {
           throw new Error(`HTTP error! status: ${allResponse.status}`);
@@ -46,6 +47,8 @@ function ItemList({ shouldFetch, setShouldFetch }) {
     fetchItems();
   }, [user, shouldFetch]);
 
+  // User item logic to handle local storage of logged in user
+  // Occurs on setShouldFetch change from user interaction
   useEffect(() => {
     const handleStorageChange = () => {
       const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -61,31 +64,35 @@ function ItemList({ shouldFetch, setShouldFetch }) {
 
   if (error) return <div>Error: {error}</div>;
 
+  // Determine and display appropriate items for logged in user vs visitor
   const displayedItems = viewAll ? allItems : (user ? items : allItems);
 
   return (
-    <div>
-      <h1>Inventory Items</h1>
+    <div className="item-list-container">
+      <h1 className="inventory-title">Current Items</h1>
       {user && (
-        <button onClick={() => setViewAll(!viewAll)}>
-          {viewAll ? "View My Items" : "View All Items"}
-        </button>
+        <div className="toggle-button">
+          <button onClick={() => setViewAll(!viewAll)}>
+            {viewAll ? "View My Items" : "View All Items"}
+          </button>
+        </div>
       )}
       {displayedItems.length === 0 ? (
         <p>No items found.</p>
       ) : (
-        <ul>
+        <ul className="item-list">
           {displayedItems.map(item => (
-            <li key={item.id}>
-              <strong>Quantity: {item.quantity}</strong> - {' '}
-              <Link to={`/item/${item.id}`}>{item.item_name}</Link>
-              {" - "}
-              {item.description && item.description.length > 100
-                ? item.description.substring(0, 100) + "..."
-                : item.description}
-              {item.added_by && (
-                <span> (Added by: {item.added_by})</span>
-              )}
+            <li key={item.id} className="item-card">
+              <Link to={`/item/${item.id}`} className="item-link">
+                <strong>Quantity: {item.quantity}</strong>
+                <h3>{item.item_name}</h3>
+                <p>
+                  {item.description && item.description.length > 100
+                    ? item.description.substring(0, 100) + "..."
+                    : item.description}
+                </p>
+                {item.added_by && <p className="added-by">Added by: {item.added_by}</p>}
+              </Link>
             </li>
           ))}
         </ul>

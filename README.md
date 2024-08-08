@@ -50,13 +50,8 @@ This tool provides users with the ability to:
 - Toggle between viewing all items and just your own items
 - Logout of your account
 
-## Notes/TODO
+## Notes
 
-- Still need to figure out how to solve the refresh problem
-- Styling is ok, but navigation is still a bit wonky
-- Make better comments
-- Fill out explanation section before finishing
+There is still a bug with the logout function that I could not quite solve. I can't tell if it's a logal storage issue, or if I needed to add a separate route, or if it was something that had to do with the browser, or something I hadn't considered. While I did struggle for a while with styling, I did have some time after finally getting everything to be a button and laid out in a grid, etc. Nevertheless, it was not enough to stomp that particular bug.
 
-## Explanation
-
--
+The bug, specifically, is that a user will still be able to access their inventory after logging out. They cannot edit those items but they can still swap between all items and their items despite being not logged in. Of note, if the view one of the items either in their inventory or the overall inventory, when they click the 'Back to List' button, they will be properly returned to the homepage displaying all items added by all users and will not have access to their inventory any longer.

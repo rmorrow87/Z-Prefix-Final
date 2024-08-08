@@ -17,21 +17,19 @@ function Navigation({ user, setUser }) {
   };
 
   return (
-    <nav>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        {user ? (
-          <>
-            <li><Link to="/add">Add Item</Link></li>
-            <li><button onClick={handleLogout}>Logout</button></li>
-          </>
-        ) : (
-          <>
-            <li><Link to="/register">Register</Link></li>
-            <li><Link to="/login">Login</Link></li>
-          </>
-        )}
-      </ul>
+    <nav className="nav-buttons">
+      <Link to="/" className="nav-button">Home</Link>
+      {user ? (
+        <>
+          <Link to="/add" className="nav-button">Add Item</Link>
+          <button onClick={handleLogout} className="nav-button">Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/register" className="nav-button">Register</Link>
+          <Link to="/login" className="nav-button">Login</Link>
+        </>
+      )}
     </nav>
   );
 }
@@ -49,7 +47,10 @@ function App() {
 
   return (
     <Router>
-      <div className="container">
+      <div className="app-container">
+        <header className="app-header">
+          <h1>Inventory Manager</h1>
+        </header>
         <Navigation user={user} setUser={setUser} />
         <Routes>
           <Route path="/" element={<ItemList shouldFetch={shouldFetchItems} setShouldFetch={setShouldFetchItems} />} />

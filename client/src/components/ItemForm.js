@@ -7,6 +7,7 @@ function ItemForm() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
+  // Take params to display individual item based on item id
   useEffect(() => {
     if (id) {
       fetch(`http://localhost:3001/api/items/${id}`)
@@ -15,10 +16,12 @@ function ItemForm() {
     }
   }, [id]);
 
+  // Set item state to user selection
   const handleChange = (e) => {
     setItem({ ...item, [e.target.name]: e.target.value });
   };
 
+  // Check for user state before allowing CREATE, UPDATE, or DELETE
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) {
@@ -26,9 +29,11 @@ function ItemForm() {
       return;
     }
 
+    // Set variable value depending on CREATE vs UPDATE measuring id as boolean
     const method = id ? 'PUT' : 'POST';
     const url = id ? `http://localhost:3001/api/items/${id}` : 'http://localhost:3001/api/items';
 
+    // CREATE or UPDATE after converting input to string
     fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -41,7 +46,7 @@ function ItemForm() {
         return response.json();
       })
       .then(savedItem => {
-        console.log('Item saved successfully:', savedItem); // testing for correct error handling and navigation
+        console.log('Item saved successfully:', savedItem);
         alert(id ? 'Item updated successfully' : 'Item created successfully');
         navigate('/');
       })

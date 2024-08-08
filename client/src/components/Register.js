@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Registration saving user as state to be put in DB
 function Register() {
   const [user, setUser] = useState({
     first_name: '',
@@ -10,10 +11,12 @@ function Register() {
   });
   const navigate = useNavigate();
 
+  // Set state values to user input
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  // Add state info to user table in DB
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch('http://localhost:3001/api/register', {
