@@ -5,6 +5,7 @@ import ItemDetail from './components/ItemDetail';
 import ItemForm from './components/ItemForm';
 import Register from './components/Register';
 import Login from './components/Login';
+import './App.css';
 
 function Navigation({ user, setUser }) {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ function App() {
 
   return (
     <Router>
-      <div>
+      <div className="container">
         <Navigation user={user} setUser={setUser} />
         <Routes>
           <Route path="/" element={<ItemList shouldFetch={shouldFetchItems} setShouldFetch={setShouldFetchItems} />} />

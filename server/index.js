@@ -69,10 +69,21 @@ app.post('/api/items', async (req, res) => {
 // UPDATE an item
 app.put('/api/items/:id', async (req, res) => {
   try {
-    await knex('items').where('id', req.params.id).update(req.body);
-    const updatedItem = await knex('items').where('id', req.params.id).first();
-    res.json(updatedItem);
+    const { id } = req.params;
+    const { item_name, description, quantity } = req.body;
+
+    const updatedItem = await knex('items')
+      .where('id', id)
+      .update({ item_name, description, quantity })
+      .returning(['id', 'item_name', 'description', 'quantity', 'user_id']);
+
+    if (updatedItem.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(updatedItem[0]);
   } catch (error) {
+    console.error('Error updating item:', error);
     res.status(500).json({ error: error.message });
   }
 });
